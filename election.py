@@ -38,21 +38,31 @@ def get_unique_elections(download:bool, elections:list[dict]):
         return json.loads(uniq_elections_path.read_text(encoding='utf8'))
 
 def main(download:bool):
-    """ Link elections to candidates
-    """
+    """ Link elections to candidates """
     res = get_elections_data(download)
 
     elec_codes = { e['electionCodes'] for e in res }
 
     elections = get_unique_elections(download, res)
 
-    print('Get current election')
+    print('Current election candidates')
     # Election dates are in the format 'yyyy-mm-dd'
     cur_elec = [
         e for e in res
         if e['electionDate'] == '2022-11-08'
     ][0]
-    pp.pprint(cur_elec)
+    pp.pprint(cur_elec['candidates'])
+
+    print('Are there any winners?')
+    winners = [
+        c for c in cur_elec['candidates']
+        if c['isWinner'] is True
+    ]
+    print(winners)
+
+    print('Are filers linked to candidateNids?')
+    filers = json.loads(Path('example/filers.json').read_text(encoding='utf8'))
+    pp.pprint(filers[0])
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

@@ -62,7 +62,21 @@ def main(download:bool):
 
     print('Are filers linked to candidateNids?')
     filers = json.loads(Path('example/filers.json').read_text(encoding='utf8'))
-    pp.pprint(filers[0])
+    pp.pprint(filers[0]['electionInfluences'])
+
+    print('What does a ballot measures electioInfluence look like?')
+    measure_filer = [
+        f for f in filers
+        if 'Yes on W' in ' '.join([ ei['committeeName'] for ei in f['electionInfluences'] ])
+    ]
+    pp.pprint(measure_filer)
+
+    print('What are the unique values of committeeTypes?')
+    committee_type = {
+        c for f in filers
+        for c in f['committeeTypes']
+    }
+    print(committee_type)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

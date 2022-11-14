@@ -18,13 +18,15 @@ Socrata required fields:
 """
 import argparse
 from datetime import datetime
-from itertools import zip_longest
 import json
 import logging
 from pathlib import Path
+from pprint import PrettyPrinter
 from random import uniform
 import pandas as pd
 import requests
+from model.transaction import Transaction, UnitemizedTransaction, TransactionCollection, get_missing_element_model
+from netfile_client.NetFileClient import NetFileClient
 from .query_v2_api import get_filer, get_auth_from_env_file
 
 logger = logging.getLogger(__name__)
@@ -213,36 +215,46 @@ def get_all_filers(filer_nids: set) -> list[dict]:
     return filers
 
 def fetch_source_data() -> tuple[list[dict]]:
+    """ Download all of
+        - filings
+        - transaction
+        - filers
+        from NetFile
+    """
     print('===== Get filings =====')
     filings = get_all_filings()
 
-    print('===== Get transactions =====')
-    transactions = get_trans()
+    print('===== Get filing elements =====')
+    filing_elements = NetFileClient.fetch('filing_elements')
 
     print('===== Get filers =====')
     unique_filer_nids = set(f['filerMeta']['filerId'] for f in filings)
     filers = get_all_filers(unique_filer_nids)
 
-    return filings, transactions, filers
+    return filings, filing_elements, filers
 
 def load_source_data() -> tuple[list[dict]]:
+    """ Load filing, transaction, and filers from disk
+    """
     source_data = []
-    for f in ['filings', 'transactions', 'filers']:
+    for f in ['filings', 'filing_elements', 'filers']:
         source_data.append(json.loads(Path(f'example/{f}.json').read_text(encoding='utf8')))
 
     return tuple(source_data)
 
 def get_source_data(download=False) -> tuple[list[dict]]:
+    """ Download filings, filing_elements, and filers or load it from disk
+    """
     if download:
-        filings, transactions, filers = fetch_source_data()
+        filings, filing_elements, filers = fetch_source_data()
 
         save_source_data({
             'filings': filings,
-            'transactions': transactions,
+            'filing_elements': filing_elements,
             'filers': filers
         })
 
-        return filings, transactions, filers
+        return filings, filing_elements, filers
     else:
         return load_source_data()
 
@@ -255,57 +267,6 @@ def df_from_filings(filings):
         'form': f['specificationRef']['name'].replace('FPPC', ''),
         'committee_name': f['filerMeta']['commonName']
     } for f in filings ])
-
-def get_relative_location(city: str, state: str) -> str:
-    """ Get location relative to Oakland, CA
-        from address city & state
-    """
-    if city == 'Oakland':
-        return 'In Oakland'
-    if state == 'CA':
-        return 'Other CA City'
-    return 'Out of State'
-
-def get_address(addresses: list[dict]) -> dict[str, str]:
-    """ Get street address from addresses, or return empty string
-        Expects address dicts in the form
-        {
-            line1
-            line2
-            city
-            state
-            zip
-        }
-    """
-    keys = [
-        'contributor_address',
-        'city',
-        'state',
-        'zip_code',
-        'contributor_region'
-    ]
-
-    if len(addresses) < 1:
-        return { k: v for k, v in zip_longest(keys, '', fillvalue='') }
-
-    address = addresses[0]
-
-    street = f'{address.get("line1") or ""} {address.get("line2") or ""}'.strip()
-    city = 'Oakland' if address.get('city') in OAKLAND_MISSPELLINGS else address.get('city')
-    city_state_zip = ' '.join([city or '', address['state'] or '', address['zip'] or '']).strip()
-    contributor_address = f'{street}, {city_state_zip}' if (street and city_state_zip) else ''
-
-    return {
-        k: v
-        for k, v
-        in zip(keys, [
-            contributor_address,
-            city,
-            address['state'],
-            address['zip'],
-            get_relative_location(city, address['state'])
-        ])
-    }
 
 def get_location(addresses):
     """ Get (long, lat) from addresses, or return empty string """
@@ -325,62 +286,6 @@ def get_location(addresses):
     lat_range = 0,0
     adjusted = [str(float(long) + uniform(*long_range)), str(float(lat) + uniform(*lat_range))]
     return f'POINT ({" ".join(adjusted)})'
-
-def get_contrib_category(entity_code):
-    """ Translate three-letter entityCd into human readable entity code """
-    return {
-        'RCP': 'Committee',
-        'IND': 'Individual',
-        'OTH': 'Business/Other',
-        'COM': 'Committee',
-        'PTY': 'Political Party',
-        'SCC': 'Small Contributor Committee'
-    }.get(entity_code)
-
-def df_from_trans(transactions):
-    """ Transform transaction dict into Pandas DataFrame """
-    tran_cols = [
-        'tran_id',
-        'filing_nid',
-        'contributor_name',
-        'contributor_type',
-        'contributor_category',
-        'contributor_address',
-        'city',
-        'state',
-        'zip_code',
-        'contributor_region',
-        'contributor_location',
-        'amount',
-        'receipt_date',
-        'expn_code',
-        'expenditure_description',
-        'form',
-        'party'
-    ]
-
-    transaction_data = [
-        {
-            'tran_id': t['transaction']['tranId'],
-            'filing_nid': t['filingNid'],
-            'contributor_name': t['allNames'],
-            'contributor_type': 'Individual' if t['transaction']['entityCd'] == 'IND' else 'Organization',
-            'contributor_category': get_contrib_category(t['transaction']['entityCd']),
-            **get_address(t['addresses']),
-            'contributor_location': None,
-            'amount': t['calculatedAmount'],
-            'receipt_date': t['transaction']['tranDate'],
-            'expn_code': t['transaction']['tranCode'],
-            'expenditure_description': t['transaction']['tranDscr'] or '',
-            'form': t['calTransactionType'],
-            'party': None,
-        } for t in transactions
-        if t.get('transaction') is not None # Skip incomplete transactions
-    ]
-
-    df = pd.DataFrame(transaction_data, columns=tran_cols)
-    df['receipt_date'] = pd.to_datetime(df['receipt_date'])
-    return df
 
 def df_from_filers(filers):
     """ Transform filers into Pandas DataFrame """
@@ -406,11 +311,11 @@ def df_from_candidates() -> pd.DataFrame:
         'end_date'
     ]
     filer_to_cand = pd.read_csv(FILER_TO_CAND_PATH, dtype={
-        'filer_name': 'string',
-        'is_terminated': 'string',
-        'sos_id': 'string',
-        'type': 'string',
-        'local_agency_id': 'string',
+        'Filer Name': 'string',
+        'Is Terminated?': 'string',
+        'SOS ID': 'string',
+        'Type': 'string',
+        'Local Agency ID': 'string',
         'election_year': int,
         'candidate': 'string',
         'contest': 'string',
@@ -422,14 +327,15 @@ def df_from_candidates() -> pd.DataFrame:
         'ballot_status': 'string'
     })
     filer_to_cand = filer_to_cand.rename(columns={
-        'sos_id': 'filer_id',
-        'filer_name': 'filer_name_local',
-        'type': 'jurisdiction',
+        'SOS ID': 'filer_id',
+        'Local Agency ID': 'local_agency_id',
+        'Filer Name': 'filer_name_local',
+        'Type': 'jurisdiction',
         'contest': 'office',
         'candidate': 'filer_name',
         'start': 'start_date',
         'end': 'end_date'
-    }, errors='raise')[
+    })[
         filer_to_cand_cols
     ].astype({ 'filer_id': 'string' })
 
@@ -438,27 +344,10 @@ def df_from_candidates() -> pd.DataFrame:
 
     return filer_to_cand
 
-def get_jurisdiction(row):
-    """ Get jurisdiction of office, one of
-        - Council District
-        - OUSD District
-        - Citywide
-    """
-    if row['office'].lower().startswith('city council district '):
-        return 'Council District'
-    if row['office'].lower().startswith('ousd district'):
-        return 'Oakland Unified School District'
-    
-    return 'Citywide'
-
 def get_filing_deadlines():
     """ Get filing deadlines from csv """
     date_fields = [ 'election_date', 'report_period_start', 'report_period_end', 'filing_deadline' ]
     return pd.read_csv(f'{INPUT_DATA_DIR}/filing_deadlines.csv', parse_dates=date_fields)
-
-def merge_filings_and_trans(filings: pd.DataFrame, trans: pd.DataFrame) -> pd.DataFrame:
-    """ Return filings DataFrame joined with transactions DataFrame, dropping common columns """
-    return filings.rename(columns={'form': 'filing_form'}).merge(trans, how='left', on='filing_nid')
 
 def save_source_data(json_data: list[dict]) -> None:
     """ Save JSON data output from NetFile API """
@@ -477,7 +366,7 @@ def save_previous_version(path_name):
         new_file_path = p.parent / new_file_name
         p.rename(new_file_path)
 
-def main(filings, transactions, filers):
+def main(filings, filing_elements, filers):
     """ Query Netfile results 1 page at a time
         Build Pandas DataFrame
         and then save it as CSV
@@ -490,8 +379,33 @@ def main(filings, transactions, filers):
     """
     filing_df = df_from_filings(filings)
     filing_df['filing_date'] = pd.to_datetime(filing_df['filing_date'])
+    print('Unique values for "form" in filings', filing_df['form'].unique())
 
-    tran_df = df_from_trans(transactions)
+    tran_df = TransactionCollection([
+        Transaction(t)
+        for t in filing_elements
+        if t.get('elementClassification') == 'Transaction'
+        and t.get('elementActivityType') != 'Superseded'
+    ]).df
+    filing_nids = filing_df['filing_nid'].unique()
+    unitemized = [
+        t
+        for t in filing_elements
+        if t.get('elementClassification') == 'UnItemizedTransaction'
+        and t.get('filingNid') in filing_nids
+        # and t.get('elementType') == 'F460ALine2'
+        and t.get('elementActivityType') != 'Superseded'
+        # and t.get('elementModel', {}).get('amount', 0) > 0
+    ]
+    print('num unitemized', len(unitemized))
+    pp = PrettyPrinter()
+    pp.pprint(unitemized[0])
+    unitemized = [
+        UnitemizedTransaction(t) for t in unitemized
+    ]
+    print('num parseable unitemized', len(unitemized))
+    unparseable = get_missing_element_model()
+    print('num unparseable unitemize', len(unparseable))
     filer_df = df_from_filers(filers)
 
     expn_codes = pd.read_csv(f'{INPUT_DATA_DIR}/expenditure_codes.csv').rename(columns={
@@ -590,8 +504,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--download', action='store_true')
 
-    args = parser.parse_args()
+    ns = parser.parse_args()
 
-    filings_json, transactions_json, filers_json = get_source_data(args.download)
+    filings_json, filing_elements_json, filers_json = get_source_data(ns.download)
 
-    main(filings_json, transactions_json, filers_json)
+    main(filings_json, filing_elements_json, filers_json)

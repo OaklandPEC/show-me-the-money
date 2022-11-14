@@ -118,92 +118,6 @@ def get_all_filings() -> list[dict]:
 
     return filings
 
-def get_trans() -> list[dict]:
-    """ Fetch all transactions """
-    params = {
-        **PARAMS,
-        'parts': 'All',
-        'limit': 1000
-    }
-    offset = 0
-    has_next_page = True
-
-    results = []
-    while has_next_page is True:
-        if offset > 0:
-            params['offset'] = offset
-
-        try:
-            res = session.get(f'{BASE_URL}/cal/v101/transaction-elements', params=params, auth=AUTH)
-        except requests.HTTPError as exc:
-            print(f'{exc.response.status_code} for request {exc.response.url}')
-            print(exc.response.json())
-            params_no_parts = { ** params }
-            params_no_parts.pop('parts')
-            res = session.get(f'{BASE_URL}/cal/v101/transaction-elements', params=params_no_parts, auth=AUTH)
-
-        body = res.json()
-        results = results + body['results']
-
-        has_next_page = body['hasNextPage']
-        offset = offset + body['limit']
-        print('\u258a', end='', flush=True)
-
-    print('')
-    return results
-
-def get_trans_for_filing(filing_nid, offset=0) -> tuple[list[dict], dict]:
-    """ Get a page of transactions
-        for a filingNid
-    """
-    params = {
-        **PARAMS,
-        'filingNid': filing_nid,
-        'parts': 'All'
-    }
-
-    if offset > 0:
-        params['offset'] = offset
-
-    res = session.get(f'{BASE_URL}/cal/v101/transaction-elements', params=params, auth=AUTH)
-    body = res.json()
-
-    return body['results'], select_response_meta(body)
-
-def get_all_trans_for_filing(filing_nid):
-    """ Get all transactions for a single filing_nid """
-    next_offset = 0
-    params = {
-        'filing_nid': filing_nid
-    }
-
-    transactions, meta = get_trans_for_filing(**params)
-    end = '/' if meta['total'] > meta['limit'] else ' '
-    if end != ' ':
-        print('')
-    print(meta['total'], end=end, flush=True)
-
-    next_offset = meta.get('next_offset')
-    while next_offset is not None:
-        results, meta = get_trans_for_filing(**params, offset=next_offset)
-        next_offset = meta.get('next_offset')
-        prog_char = '¡' if len(results) > 0 else '.'
-        transactions += results
-        print(next_offset, end='', flush=True)
-
-    return transactions
-
-def get_trans_for_filings(filing_nids: set) -> list[dict]:
-    """ Get all transactions for set of filing netfile IDs """
-    transactions = []
-    for filing_nid in filing_nids:
-        if filing_nid in SKIP_LIST:
-            continue
-        transactions += get_all_trans_for_filing(filing_nid)
-    print('')
-
-    return transactions
-
 def get_all_filers(filer_nids: set) -> list[dict]:
     """ Fetch all filers """
     filers = []
@@ -268,25 +182,6 @@ def df_from_filings(filings):
         'committee_name': f['filerMeta']['commonName']
     } for f in filings ])
 
-def get_location(addresses):
-    """ Get (long, lat) from addresses, or return empty string """
-    if len(addresses) <= 0:
-        return ''
-
-    address = addresses[0]
-    long = address['longitude']
-    lat = address['latitude']
-
-    if long is None or lat is None:
-        return ''
-
-    # long_range = (0.2275, 0.455) # approx. b/w .25 mi and .5 mi @ 38ºN
-    # lat_range = (0.2173, 0.575) # approx. b/w .25 mi and .5 mi @ 38ºN
-    long_range = 0,0
-    lat_range = 0,0
-    adjusted = [str(float(long) + uniform(*long_range)), str(float(lat) + uniform(*lat_range))]
-    return f'POINT ({" ".join(adjusted)})'
-
 def df_from_filers(filers):
     """ Transform filers into Pandas DataFrame """
     # filter out committees without CA SOS IDs
@@ -298,7 +193,20 @@ def df_from_filers(filers):
     ]).astype({ 'filer_id': 'string' })
 
 def df_from_candidates() -> pd.DataFrame:
-    """ Get DataFrame of candidates from CSV """
+    """ Get DataFrame of candidates from CSV
+
+    returns DF with fields:
+    - local_agency_id: str
+    - filer_id: str
+    - election_year
+    - filer_name: str
+    - filer_name_local: str
+    - jurisdiction: str # Used for committee type [ Candidate or Officeholder, Not Candidate-controlled, Ballot Measure Supporting ]
+    - office: str
+    - start_date: pd.datetime
+    - end_date: pd.datetime
+
+    """
     filer_to_cand_cols = [
         'local_agency_id',
         'filer_id',
@@ -311,11 +219,11 @@ def df_from_candidates() -> pd.DataFrame:
         'end_date'
     ]
     filer_to_cand = pd.read_csv(FILER_TO_CAND_PATH, dtype={
-        'Filer Name': 'string',
-        'Is Terminated?': 'string',
-        'SOS ID': 'string',
-        'Type': 'string',
-        'Local Agency ID': 'string',
+        'filer_name': 'string',
+        'is_terminated': 'string',
+        'sos_id': 'string',
+        'type': 'string',
+        'local_agency_id': 'string',
         'election_year': int,
         'candidate': 'string',
         'contest': 'string',

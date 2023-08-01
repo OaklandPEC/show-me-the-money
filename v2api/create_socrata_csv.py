@@ -26,6 +26,7 @@ from random import uniform
 import pandas as pd
 import requests
 from model.transaction import Transaction, UnitemizedTransaction, TransactionCollection, get_missing_element_model
+from model.Filer import FilerCollection
 from netfile_client.NetFileClient import NetFileClient
 from .query_v2_api import get_filer, get_auth_from_env_file
 
@@ -234,6 +235,7 @@ def df_from_candidates() -> pd.DataFrame:
         'is_winner': 'string',
         'ballot_status': 'string'
     })
+    print(filer_to_cand.columns)
     filer_to_cand = filer_to_cand.rename(columns={
         'SOS ID': 'filer_id',
         'Local Agency ID': 'local_agency_id',
@@ -314,7 +316,7 @@ def main(filings, filing_elements, filers):
     print('num parseable unitemized', len(unitemized))
     unparseable = get_missing_element_model()
     print('num unparseable unitemize', len(unparseable))
-    filer_df = df_from_filers(filers)
+    filer_df = FilerCollection(filers)
 
     expn_codes = pd.read_csv(f'{INPUT_DATA_DIR}/expenditure_codes.csv').rename(columns={
         'description': 'expenditure_type'

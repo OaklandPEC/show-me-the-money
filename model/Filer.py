@@ -16,15 +16,14 @@ class Filer:
         influences = filer_record.get('electionInfluences', [])
 
         filer_contest = self._get_filer_contest(influences)
-        self.filer_name, self.office, self.start_date, self.end_date, self.election_date = filer_contest
+        self.filer_name = filer_record['candidateName'] if filer_record.get('candidateName') else filer_record['filerName']
+        self.office, self.start_date, self.end_date, self.election_date = filer_contest
 
 
     def _get_filer_contest(self, election_influences):
         """ Get filer name and office from election_influence object """
         for i in election_influences:
             if i['candidate']:
-                candidate_name = i['candidate']['candidateName']
-
                 try:
                     office_name = i['seat']['officeName']
                 except TypeError as e:
@@ -33,17 +32,17 @@ class Filer:
                     else:
                         raise e
                 finally:
-                    office_name = None
+                    office_name = ''
                 start_date = i['startDate']
                 end_date = i['endDate']
                 election_date = i['electionDate']
 
-                return candidate_name, office_name, start_date, end_date, election_date
+                return office_name, start_date, end_date, election_date
             elif i['measure']:
                 # This currently appears to be broken/missing in the NetFile API
-                return None, None, i['startDate'], i['endDate'], i['electionDate']
+                return '', i['startDate'], i['endDate'], i['electionDate']
 
-        return [ None for _ in range(5) ]
+        return [ '' for _ in range(4) ]
 
 class FilerCollection(BaseModelCollection):
     """ A bunch of filer objects """

@@ -235,17 +235,15 @@ def df_from_candidates() -> pd.DataFrame:
         'is_winner': 'string',
         'ballot_status': 'string'
     })
-    print(filer_to_cand.columns)
     filer_to_cand = filer_to_cand.rename(columns={
-        'SOS ID': 'filer_id',
-        'Local Agency ID': 'local_agency_id',
-        'Filer Name': 'filer_name_local',
-        'Type': 'jurisdiction',
+        'sos_id': 'filer_id',
+        'filer_name': 'filer_name_local',
+        'type': 'jurisdiction',
         'contest': 'office',
         'candidate': 'filer_name',
         'start': 'start_date',
         'end': 'end_date'
-    })[
+    }, errors='raise')[
         filer_to_cand_cols
     ].astype({ 'filer_id': 'string' })
 
@@ -316,15 +314,18 @@ def main(filings, filing_elements, filers):
     print('num parseable unitemized', len(unitemized))
     unparseable = get_missing_element_model()
     print('num unparseable unitemize', len(unparseable))
-    filer_df = FilerCollection(filers)
+    filer_df = FilerCollection(filers).df
+    print(filer_df.columns)
 
     expn_codes = pd.read_csv(f'{INPUT_DATA_DIR}/expenditure_codes.csv').rename(columns={
         'description': 'expenditure_type'
     })
     tran_df = tran_df.merge(expn_codes, how='left', on='expn_code')
 
-    filer_to_cand = df_from_candidates()
+    # Drop these 4 columns as I think I can get them from Filer
+    filer_to_cand = df_from_candidates().drop(columns=['filer_name', 'office', 'start_date', 'end_date'])
     filer_id_mapping = filer_to_cand.merge(filer_df, how='left', on='filer_id')
+    print(filer_id_mapping.columns)
     filer_filings = filer_id_mapping.merge(filing_df, how='left', on='filer_nid')
     filing_trans = filer_filings.rename(columns={
         'form': 'filing_form'
@@ -339,6 +340,7 @@ def main(filings, filing_elements, filers):
     }).rename(columns={
         'filing_nid': 'filing_id'
     })
+    print(df.loc[df['filer_name'].isna()])
     df['filer_name'] = df.apply(
         lambda x: (
             x['filer_name']

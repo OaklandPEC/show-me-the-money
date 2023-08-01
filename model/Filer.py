@@ -5,7 +5,6 @@ from datetime import datetime as dt
 from pprint import PrettyPrinter
 from typing import List
 import pandas as pd
-import polars as pl
 from .base import BaseModelCollection
 
 class Filer:
@@ -48,26 +47,23 @@ class Filer:
 
 class FilerCollection(BaseModelCollection):
     """ A bunch of filer objects """
+    def __init__(self):
+        super()
+        self.column_dtypes = {
+            'filer_nid': 'string',
+            'filer_id': 'string',
+            'filer_name': 'string',
+            'start_date': 'datetime64',
+            'end_date': 'datetime64',
+            'election_date': 'datetime64'
+        }
+
     @property
     def df(self):
         if self._df.empty:
             self._df = pd.DataFrame([
                 filer.__dict__
                 for filer in self.collection
-            ]).astype({
-                'filer_nid': 'string',
-                'filer_id': 'string',
-                'filer_name': 'string',
-                'start_date': 'datetime64',
-                'end_date': 'datetime64',
-                'election_date': 'datetime64'
-            })
+            ]).astype(self.column_dtypes)
 
         return self._df
-
-    def pl(self):
-        if self._pl.is_empty():
-            self._pl = pl.DataFrame([
-                filer.__dict__
-                for filer in self.collection
-            ])

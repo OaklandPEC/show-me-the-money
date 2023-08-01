@@ -13,7 +13,7 @@ class Filer:
         self.filer_nid = filer_record['filerNid']
         self.filer_id = filer_record['registrations'].get('CA SOS')
 
-        influences = filer_record.get('electionInfluences')
+        influences = filer_record.get('electionInfluences', [])
 
         filer_contest = self._get_filer_contest(influences)
         self.filer_name, self.office, self.start_date, self.end_date, self.election_date = filer_contest
@@ -47,23 +47,14 @@ class Filer:
 
 class FilerCollection(BaseModelCollection):
     """ A bunch of filer objects """
-    def __init__(self):
-        super()
-        self.column_dtypes = {
+    def __init__(self, filer_records):
+        super().__init__(filer_records)
+        self._column_dtypes = {
             'filer_nid': 'string',
             'filer_id': 'string',
             'filer_name': 'string',
-            'start_date': 'datetime64',
-            'end_date': 'datetime64',
-            'election_date': 'datetime64'
+            'start_date': 'datetime64[ns]',
+            'end_date': 'datetime64[ns]',
+            'election_date': 'datetime64[ns]'
         }
-
-    @property
-    def df(self):
-        if self._df.empty:
-            self._df = pd.DataFrame([
-                filer.__dict__
-                for filer in self.collection
-            ]).astype(self.column_dtypes)
-
-        return self._df
+        self._collection = [ Filer(filer_record) for filer_record in filer_records ]

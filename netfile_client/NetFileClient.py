@@ -1,3 +1,5 @@
+import logging
+import os
 from pathlib import Path
 import requests
 
@@ -36,30 +38,60 @@ class Routes:
 
 class BaseEndpointClient:
     """ Base functionality for fetching from NetFile endpoint """
-    def __init__(self, base_url, base_params, auth):
+    def __init__(self, base_url:str, base_params:dict, auth:tuple, additional_params:dict={}):
         self.has_next_page = True
         self.base_url = base_url
-        self.base_params = base_params
+        self.url = base_url
+        initial_params = {
+            'offset': 0,
+            'limit': 1000
+        }
+        self.base_params = {
+            **initial_params,
+            **base_params
+        }
+        self.params = {
+            **self.base_params,
+            **additional_params
+        }
         self.auth = auth
         self.session = requests.Session()
         self.session.hooks['response'] = [
-            lambda response, *args, **kwargs: response.raise_for_status()
+            lambda response, *_, **__: response.raise_for_status()
         ]
         retry_strategy = requests.adapters.Retry(total=5, backoff_factor=2)
         adapter = TimeoutAdapter(max_retries=retry_strategy)
         self.session.mount('https://', adapter)
 
-class FilingElementsClient(BaseEndpointClient):
+    def fetch(self):
+        res = self.session.get(self.url, auth=self.auth, params=self.params)
+        body = res.json()
+        if self.params['offset'] == 0:
+            print(body['totalCount'])
+
+        self._configure_next_request(body)
+
+        return body['results']
+    
+    def _configure_next_request(self, response_body):
+        self.has_next_page = response_body['hasNextPage']
+        next_offset = self.params['limit'] + self.params['offset'] if self.has_next_page else None
+
+        if next_offset is not None and callable(self._set_next_fetch_by):
+            try:
+                self._set_next_fetch_by()
+            except StopIteration:
+                pass
+
+        else:
+            self.params['offset'] = next_offset
+            print(self.params['offset'], self.params['limit'])
+
+class FilingElementClient(BaseEndpointClient):
     """ Fetch filing elements """
     def __init__(self, base_url, base_params, auth, **kwargs):
         super().__init__(base_url, base_params, auth)
-        route = Routes.filing_elements
-        self.url = f'{self.base_url}{route}'
-        self.params = {
-            **self.base_params,
-            'offset': 0,
-            'limit': 1000
-        }
+        self.url = f'{self.base_url}{Routes.filing_elements}'
         self._fetchable_by = [
             'filing_nid',
             'element_nid'
@@ -67,32 +99,6 @@ class FilingElementsClient(BaseEndpointClient):
 
         # Prepare own query attributes
         self._set_next_fetch_by = self._configure_fetch_by(**kwargs)
-
-    def _configure_next_request(self, res):
-        self.has_next_page = res['hasNextPage']
-        next_offset = self.params['limit'] + self.params['offset'] if self.has_next_page else None
-
-        if next_offset is None and callable(self._set_next_fetch_by):
-            try:
-                self._set_next_fetch_by()
-            except StopIteration:
-                pass
-        else:
-            self.params['offset'] = next_offset
-
-    def _get(self, params):
-        res = self.session.get(self.url, auth=self.auth, params=params)
-        body = res.json()
-        print('.', end='', flush=True)
-        self._configure_next_request(body)
-
-        return body['results']
-
-    def fetch(self):
-        """ Fetch all filings elements,
-            probably for filing_nids
-        """
-        return self._get(self.params)
 
     def _configure_fetch_by(self, **kwargs):
         if len(kwargs) > 1:
@@ -135,26 +141,72 @@ class FilingActivityClient(BaseEndpointClient):
 
 class NetFileClient:
     """ Fetch data from NetFile V2 endpoints """
-    base_url = 'https://netfile.com/api/campaign'
-    base_params = { 'aid': 'COAK' }
-    auth = get_auth_from_env_file()
-    routes = Routes
-    _clients = {
-        'filing_elements': FilingElementsClient,
-        'filings': FilingClient,
-        'filer': FilerClient,
-        'transaction': TransactionsClient,
-        'filing_activities': FilingActivityClient
-    }
+    def __init__(self, api_key='', api_secret='', env_file='.env'):
+        self._base_url = 'https://netfile.com/api/campaign'
+        self._initial_params = {
+            'offset': 0,
+            'limit': 1000
+        }
+        self._base_params = { 'aid': 'COAK' }
+        self._params = {
+            **self._base_params,
+            **self._initial_params
+        }
+        self._auth = (api_key, api_secret) if api_key and api_secret else self.get_auth(env_file)
 
-    @classmethod
-    def fetch(cls, endpoint, **kwargs):
+        self.session = requests.Session()
+        self.session.hooks['response'] = [
+            lambda response, *_, **__: response.raise_for_status()
+        ]
+        retry_strategy = requests.adapters.Retry(total=5, backoff_factor=2)
+        adapter = TimeoutAdapter(max_retries=retry_strategy)
+        self.session.mount('https://', adapter)
+
+        self._log_level = os.environ.get('LOG_LEVEL', 'INFO')
+        self._logger = logging.getLogger(__name__)
+        handler = logging.StreamHandler()
+        self._logger.addHandler(handler)
+        self._logger.setLevel(self._log_level)
+
+    def get_auth(self, env_file):
+        key_api_key = 'NETFILE_API_KEY'
+        key_api_secret = 'NETFILE_API_SECRET'
+
+        # Attempt to get auth from env vars
+        api_key = os.environ.get(key_api_key)
+        api_secret = os.environ.get(key_api_secret)
+
+        if api_key and api_secret:
+            return api_key, api_secret
+
+        # Attempt to get auth from .env file
+        with open(env_file) as f:
+            contents = {
+                (item := line.split('='))[0]: item[1] for line in f.read().strip().split('\n')
+            }
+            api_key, api_secret = contents.get(key_api_key), contents.get(key_api_secret) 
+
+        if api_key and api_secret:
+            return api_key, api_secret
+        else:
+            raise KeyError('Unable to load credentials')
+
+    def fetch(self, endpoint, **kwargs):
         """ Fetch all of a particular record type """
-        fetcher = cls._clients[endpoint](cls.base_url, cls.base_params, cls.auth, **kwargs)
-        results = []
+        url = self._base_url + getattr(Routes, endpoint)
+        params = self._params
+        if 'params' in kwargs:
+            params.update(kwargs['params'])
+        res = self.session.get(url, auth=self._auth, params=params)
+        body = res.json()
+        results = body['results']
+        self._logger.debug(body['totalCount'])
 
-        while fetcher.has_next_page:
-            results += fetcher.fetch()
+        while body['hasNextPage']:
+            params['offset'] = params['limit'] + params['offset']
+            res = self.session.get(url, auth=self._auth, params=params)
+            body = res.json()
+            results += body['results']
+            self._logger.debug('%s %s', params['offset'], params['limit'])
 
-        print('')
         return results

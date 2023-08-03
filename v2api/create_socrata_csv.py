@@ -136,15 +136,16 @@ def fetch_source_data() -> tuple[list[dict]]:
         - filers
         from NetFile
     """
+    netfile_client = NetFileClient()
     print('===== Get filings =====')
     filings = get_all_filings()
 
     print('===== Get filing elements =====')
-    filing_elements = NetFileClient.fetch('filing_elements')
+    filing_elements = netfile_client.fetch('filing_elements')
 
     print('===== Get filers =====')
     unique_filer_nids = set(f['filerMeta']['filerId'] for f in filings)
-    filers = get_all_filers(unique_filer_nids)
+    filers = netfile_client.fetch('filers')
 
     return filings, filing_elements, filers
 
@@ -182,16 +183,6 @@ def df_from_filings(filings):
         'form': f['specificationRef']['name'].replace('FPPC', ''),
         'committee_name': f['filerMeta']['commonName']
     } for f in filings ])
-
-def df_from_filers(filers):
-    """ Transform filers into Pandas DataFrame """
-    # filter out committees without CA SOS IDs
-    # as we have no way to join them to filings
-    return pd.DataFrame([ {
-        'filer_nid': f['filerNid'],
-        'filer_id': f['registrations'].get('CA SOS')
-    } for f in filers if f['registrations'].get('CA SOS') is not None
-    ]).astype({ 'filer_id': 'string' })
 
 def df_from_candidates() -> pd.DataFrame:
     """ Get DataFrame of candidates from CSV
@@ -340,7 +331,7 @@ def main(filings, filing_elements, filers):
     }).rename(columns={
         'filing_nid': 'filing_id'
     })
-    print(df.loc[df['filer_name'].isna()])
+    print(df.loc[df['filer_name'].isna()][['filer_id','local_agency_id','filer_name_local', 'filer_name','jurisdiction']])
     df['filer_name'] = df.apply(
         lambda x: (
             x['filer_name']

@@ -138,7 +138,7 @@ def fetch_source_data() -> tuple[list[dict]]:
     """
     netfile_client = NetFileClient()
     print('===== Get filings =====')
-    filings = get_all_filings()
+    filings = netfile_client.fetch('filings')
 
     print('===== Get filing elements =====')
     filing_elements = netfile_client.fetch('filing_elements')
@@ -307,6 +307,7 @@ def main(filings, filing_elements, filers):
     print('num unparseable unitemize', len(unparseable))
     filer_df = FilerCollection(filers).df
     print(filer_df.columns)
+    print(filer_df[filer_df['candidate_name'].str.contains('Velasquez') | filer_df['filer_name'].str.startswith('Yes on V and Q')])
 
     expn_codes = pd.read_csv(f'{INPUT_DATA_DIR}/expenditure_codes.csv').rename(columns={
         'description': 'expenditure_type'
@@ -315,8 +316,11 @@ def main(filings, filing_elements, filers):
 
     # Drop these 4 columns as I think I can get them from Filer
     filer_to_cand = df_from_candidates().drop(columns=['filer_name', 'office', 'start_date', 'end_date'])
+    print(filer_to_cand.columns)
+    print(filer_to_cand[filer_to_cand['filer_id'].isin(['1440818','1453161'])])
     filer_id_mapping = filer_to_cand.merge(filer_df, how='left', on='filer_id')
     print(filer_id_mapping.columns)
+    print(filer_id_mapping[filer_id_mapping['filer_name'].isna()][['filer_nid','filer_id','filer_name_local','filer_name']])
     filer_filings = filer_id_mapping.merge(filing_df, how='left', on='filer_nid')
     filing_trans = filer_filings.rename(columns={
         'form': 'filing_form'
@@ -331,7 +335,6 @@ def main(filings, filing_elements, filers):
     }).rename(columns={
         'filing_nid': 'filing_id'
     })
-    print(df.loc[df['filer_name'].isna()][['filer_id','local_agency_id','filer_name_local', 'filer_name','jurisdiction']])
     df['filer_name'] = df.apply(
         lambda x: (
             x['filer_name']

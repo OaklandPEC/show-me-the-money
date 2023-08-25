@@ -35,6 +35,7 @@ class Routes:
     transactions = '/cal/v101/transaction-elements'
     filing_activities = 'filing/v101/filing-activities'
     filing_elements = '/filing/v101/filing-elements'
+    elections = '/election/v101/elections'
 
 class BaseEndpointClient:
     """ Base functionality for fetching from NetFile endpoint """

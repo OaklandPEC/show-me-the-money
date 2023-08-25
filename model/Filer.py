@@ -16,7 +16,9 @@ class Filer:
         influences = filer_record.get('electionInfluences', [])
 
         filer_contest = self._get_filer_contest(influences)
-        self.filer_name = filer_record['candidateName'] if filer_record.get('candidateName') else filer_record['filerName']
+        self.filer_name = filer_record['filerName']
+        self.candidate_name = filer_record.get('candidateName')
+        self.committee_type = filer_record['committeeTypes'][0]
         self.office, self.start_date, self.end_date, self.election_date = filer_contest
 
 
@@ -52,8 +54,9 @@ class FilerCollection(BaseModelCollection):
             'filer_nid': 'string',
             'filer_id': 'string',
             'filer_name': 'string',
-            'start_date': 'datetime64[ns]',
-            'end_date': 'datetime64[ns]',
-            'election_date': 'datetime64[ns]'
+            'candidate_name': 'string',
+            'start_date': 'string',
+            'end_date': 'string',
+            'election_date': 'string'
         }
         self._collection = [ Filer(filer_record) for filer_record in filer_records ]

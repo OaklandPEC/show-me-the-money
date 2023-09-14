@@ -68,7 +68,7 @@ class BaseEndpointClient:
         res = self.session.get(self.url, auth=self.auth, params=self.params)
         body = res.json()
         if self.params['offset'] == 0:
-            print(body['totalCount'])
+            print(body['totalCount'], flush=True)
 
         self._configure_next_request(body)
 
@@ -82,11 +82,11 @@ class BaseEndpointClient:
             try:
                 self._set_next_fetch_by()
             except StopIteration:
-                pass
+                print('done', flush=True)
 
         else:
             self.params['offset'] = next_offset
-            print(self.params['offset'], self.params['limit'])
+            print(self.params['offset'], self.params['limit'], flush=True)
 
 class FilingElementClient(BaseEndpointClient):
     """ Fetch filing elements """

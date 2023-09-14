@@ -9,7 +9,7 @@ def get_auth_from_env_file(filename: str='.env'):
     """ Split .env file on newline and look for API_KEY and API_SECRET
         Return their values as a tuple
     """
-    auth_keys = [ 'API_KEY', 'API_SECRET' ]
+    auth_keys = [ 'NETFILE_API_KEY', 'NETFILE_API_SECRET' ]
     auth = tuple( v for _, v in sorted([
         ln.split('=') for ln in
         Path(filename).read_text(encoding='utf8').strip().split('\n')

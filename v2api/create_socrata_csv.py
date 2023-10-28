@@ -25,7 +25,7 @@ from pathlib import Path
 from random import uniform
 import pandas as pd
 import requests
-from .query_v2_api import get_filer, AUTH
+from .query_v2_api import get_filer, get_auth_from_env_file
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -55,6 +55,7 @@ OAKLAND_MISSPELLINGS = [
     'Okaland',
     'oakland'
 ]
+AUTH=get_auth_from_env_file()
 
 class TimeoutAdapter(requests.adapters.HTTPAdapter):
     """ Will this allow me to retry on timeout? """

@@ -27,6 +27,6 @@ jobs:
         python -m v2api.create_socrata_csv --download
         python -m v2api.update
       env: 
-        NETFILE_API_KEY: ${{secrets.NETFILE_API_KEY}}
-        NETFILE_API_SECRET: ${{secrets.NETFILE_API_SECRET}}
+        API_KEY: ${{secrets.NETFILE_API_KEY}}
+        API_SECRET: ${{secrets.NETFILE_API_SECRET}}
         

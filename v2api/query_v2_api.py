@@ -28,6 +28,7 @@ def get_auth_from_env_file(filename: str='.env'):
             
     return auth
 
+AUTH=get_auth_from_env_file()
 
 pp = PrettyPrinter()
 

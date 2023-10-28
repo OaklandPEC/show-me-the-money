@@ -2,6 +2,7 @@
 """
 from pprint import PrettyPrinter
 from pathlib import Path
+import os
 import requests
 
 BASE_URL = 'https://netfile.com/api/campaign'
@@ -9,26 +10,24 @@ CONTRIBUTION_FORM = 'F460A'
 EXPENDITURE_FORM = 'F460E'
 
 PARAMS = { 'aid': 'COAK' }
-env_vars = {
-    ln.split('=')[0]: ln.split('=')[1]
-    for ln
-    in  Path('.env').read_text(encoding='utf8').strip().split('\n')
-}
 
 def get_auth_from_env_file(filename: str='.env'):
     """ Split .env file on newline and look for API_KEY and API_SECRET
         Return their values as a tuple
     """
+    env_file=Path(filename)
     auth_keys = [ 'API_KEY', 'API_SECRET' ]
-    auth = tuple( v for _, v in sorted([
-        ln.split('=') for ln in
-        Path(filename).read_text(encoding='utf8').strip().split('\n')
-        if ln.startswith(auth_keys[0]) or ln.startswith(auth_keys[1])
-    ], key=lambda ln: auth_keys.index(ln[0])))
-
+    if env_file.exists():
+        auth = tuple( v for _, v in sorted([
+            ln.split('=') for ln in
+            env_file.read_text(encoding='utf8').strip().split('\n')
+            if ln.startswith(auth_keys[0]) or ln.startswith(auth_keys[1])
+        ], key=lambda ln: auth_keys.index(ln[0])))
+    else:
+        auth=tuple(os.environ[key] for key in auth_keys)
+            
     return auth
 
-AUTH = get_auth_from_env_file()
 
 pp = PrettyPrinter()
 

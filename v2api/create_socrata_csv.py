@@ -461,8 +461,10 @@ def merge_filings_and_trans(filings: pd.DataFrame, trans: pd.DataFrame) -> pd.Da
 
 def save_source_data(json_data: list[dict]) -> None:
     """ Save JSON data output from NetFile API """
+    example_data_dir=Path(EXAMPLE_DATA_DIR)
+    example_data_dir.mkdir(exist_ok=True)
     for endpoint_name, data in json_data.items():
-        Path(f'{EXAMPLE_DATA_DIR}/{endpoint_name}.json').write_text(
+        (example_data_dir / f'{endpoint_name}.json').write_text(
             json.dumps(data, indent=4
         ), encoding='utf8')
 
@@ -563,6 +565,8 @@ def main(filings, transactions, filers):
     contrib_df = pd.concat([contrib_df, latest_late_contribs])[contrib_cols]
     print(contrib_df.head(), len(contrib_df.index), sep='\n')
 
+    output_data_dir=Path(OUTPUT_DATA_DIR)
+    output_data_dir.mkdir(exist_ok=True)
     contribs_file_path = f'{OUTPUT_DATA_DIR}/contribs_socrata.csv'
     save_previous_version(contribs_file_path)
     contrib_df.to_csv(contribs_file_path, index=False)

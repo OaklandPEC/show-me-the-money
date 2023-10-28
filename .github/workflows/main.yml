@@ -1,0 +1,32 @@
+name: Update Show Me the Money
+
+on:
+  schedule:
+    - cron: '0 0 * * *' 
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'  
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Update Show Me the Money
+      run: |
+        python -m v2api.create_socrata_csv --download
+        python -m v2api.update
+      env: 
+        NETFILE_API_KEY: ${{secrets.NETFILE_API_KEY}}
+        NETFILE_API_SECRET: ${{secrets.NETFILE_API_SECRET}}
+        

@@ -335,15 +335,8 @@ def main(filings, filing_elements, filers):
     }).rename(columns={
         'filing_nid': 'filing_id'
     })
-    df['filer_name'] = df.apply(
-        lambda x: (
-            x['filer_name']
-            if x['jurisdiction'] == 'Candidate or Officeholder'
-            else x['filer_name_local']
-        ).strip(),
-        axis=1,
-        result_type='reduce'
-    )
+
+    df['filer_name'] = df['filer_name'].fillna(df['filer_name_local']).apply(lambda x: x.strip())
 
     df.to_csv(f'{EXAMPLE_DATA_DIR}/all_trans.csv', index=False)
 

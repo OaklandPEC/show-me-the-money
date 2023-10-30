@@ -26,7 +26,7 @@ from random import uniform
 import pandas as pd
 import requests
 from model.transaction import Transaction, UnitemizedTransaction, TransactionCollection, get_missing_element_model
-from model.Filer import FilerCollection
+from model.filer import FilerCollection
 from netfile_client.NetFileClient import NetFileClient
 from .query_v2_api import get_filer, get_auth_from_env_file
 

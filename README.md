@@ -1,3 +1,6 @@
+# A script to load data into "Show Me The Money" Oakland campaign finance app
+See it here https://data.oaklandca.gov/campaign_finance/
+
 # To update Socrata app
 First, make sure you have Pipenv installed. Start a pipenv environment by doing
 ```shell

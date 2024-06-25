@@ -197,7 +197,7 @@ def get_trans_for_filings(filing_nids: set) -> list[dict]:
     for filing_nid in filing_nids:
         if filing_nid in SKIP_LIST:
             continue
-        transactions += [tran for tran in get_all_trans_for_filing(filing_nid) if is_iso_str_in_range(tran['tran_Date'], filing_date.get(f"{tran['filingId']}", set())) or tran['rec_Type']=='S497']]
+        transactions += [tran for tran in get_all_trans_for_filing(filing_nid) if is_iso_str_in_range(tran['tran_Date'], filing_date.get(f"{tran['filingId']}", set())) or tran['rec_Type']=='S497']
     print('')
 
     return transactions

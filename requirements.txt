@@ -1,3 +1,4 @@
 pandas==2.0.3
+numpy==1.20.3
 requests==2.31.0
 socrata_py==1.1.13

@@ -282,7 +282,7 @@ def get_filing_transactions(filings: list[dict], get_all=False):
     for filing in filings:
         t = FilingTransaction(filing['id'])
 
-        transactions += [tran for tran in t.fetch(pages=pages) if is_iso_str_in_range(tran['tran_Date'], filing_date[f'{filing['id']}'].date_range)]
+        transactions += [tran for tran in t.fetch(pages=pages) if is_iso_str_in_range(tran['tran_Date'], filing_date[f"{filing['id']}"].date_range)]
 
 
     return transactions

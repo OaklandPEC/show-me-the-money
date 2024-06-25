@@ -205,6 +205,7 @@ def get_filer_transactions(get_all=False) -> pd.DataFrame:
                 body = res.json()
 
                 transactions += body['results']
+                transactions = [tran for tran in transactions if is_iso_str_in_range(tran['tran_Date'], filing_date.get(f"{tran['filingId']}", set())) or tran['rec_Type']=='S497']
 
                 sleep_time = .1 if page.cur_page % 10 == 0 else .25
                 sleep(sleep_time)
@@ -268,7 +269,7 @@ def get_filing_transaction(filing_id, get_all=False):
     pages = 0 if get_all is True else 1
 
     results = transaction.fetch(pages=pages)
-    results = [tran for tran in results if is_iso_str_in_range(tran['tran_Date'], filing_date[f'{filing_id}'].date_range)]
+    results = [tran for tran in results if is_iso_str_in_range(tran['tran_Date'], filing_date.get(f"{filing['id']}", set())) or tran['rec_Type']=='S497']
 
     return results
 
@@ -282,7 +283,7 @@ def get_filing_transactions(filings: list[dict], get_all=False):
     for filing in filings:
         t = FilingTransaction(filing['id'])
 
-        transactions += [tran for tran in t.fetch(pages=pages) if is_iso_str_in_range(tran['tran_Date'], filing_date[f"{filing['id']}"].date_range)]
+        transactions += [tran for tran in t.fetch(pages=pages) if is_iso_str_in_range(tran['tran_Date'], filing_date.get(f"{filing['id']}", set())) or tran['rec_Type']=='S497']
 
 
     return transactions

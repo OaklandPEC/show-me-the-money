@@ -9,6 +9,10 @@ import pandas as pd
 import requests
 from sqlalchemy import create_engine, types as sq_types # pylint: disable=import-error
 
+#
+import datetime as dt
+from date_range import filing_date
+
 BASE_URL = 'https://netfile.com:443/Connect2/api/public'
 AID = 'COAK'
 HEADERS = { 'Accept': 'application/json' }
@@ -251,6 +255,12 @@ def get_filings(get_all=False, filter_amended=False):
     df.set_index('id', inplace=True)
     return df
 
+def is_iso_str_in_range(iso_str, date_range):
+    if iso_str:
+        return dt.datetime.fromisoformat(iso_str).date().toordinal() in date_range
+    else:
+        return True
+
 def get_filing_transaction(filing_id, get_all=False):
     """ Get transactions from filing id
     """
@@ -258,6 +268,7 @@ def get_filing_transaction(filing_id, get_all=False):
     pages = 0 if get_all is True else 1
 
     results = transaction.fetch(pages=pages)
+    results = [tran for tran in results if is_iso_str_in_range(tran['tran_Date'], filing_date[f'{filing_id}'].date_range)]
 
     return results
 
@@ -270,10 +281,12 @@ def get_filing_transactions(filings: list[dict], get_all=False):
     transactions = []
     for filing in filings:
         t = FilingTransaction(filing['id'])
-        
-        transactions += t.fetch(pages=pages)
+
+        transactions += [tran for tran in t.fetch(pages=pages) if is_iso_str_in_range(tran['tran_Date'], filing_date[f'{filing['id']}'].date_range)]
+
 
     return transactions
+
 
 def main():
     """ Collect all filings

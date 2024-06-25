@@ -1,3 +1,21 @@
+""" Create a CSV file from Netfile results with required fields for Socrata app
+
+Socrata required fields:
+[
+  "filer_id",
+  "filer_name",
+  "receipt_date"
+  "amount",
+  "contributor_name",
+  "contributor_address",
+  "contributor_location",
+  "contributor_type",
+  "election_year",
+  "jurisdiction",
+  "office",
+  "party",
+]
+"""
 import argparse
 from datetime import datetime
 from itertools import zip_longest
@@ -7,74 +25,8 @@ from pathlib import Path
 from random import uniform
 import pandas as pd
 import requests
+from .query_v2_api import get_filer, get_auth_from_env_file
 
-def get_auth_from_env_file(filename: str='.env'):
-    """ Split .env file on newline and look for API_KEY and API_SECRET
-        Return their values as a tuple
-    """
-    env_file=Path(filename)
-    auth_keys = [ 'API_KEY', 'API_SECRET' ]
-    if env_file.exists():
-        auth = tuple( v for _, v in sorted([
-            ln.split('=') for ln in
-            env_file.read_text(encoding='utf8').strip().split('\n')
-            if ln.startswith(auth_keys[0]) or ln.startswith(auth_keys[1])
-        ], key=lambda ln: auth_keys.index(ln[0])))
-    else:
-        auth=tuple(os.environ[key] for key in auth_keys)
-            
-    return auth
-
-AUTH=get_auth_from_env_file()
-
-def get_filing(offset=0):
-    """ Get a filing
-    """
-    url = f'{BASE_URL}/filing/v101/filings'
-
-    params = { **PARAMS }
-    if offset > 0:
-        params['offset'] = offset
-
-    res = requests.get(url, params=params, auth=AUTH)
-    body = res.json()
-    results = body.pop('results')
-
-    return results, body
-
-def get_transaction(filing):
-    """ Get a transaction
-    """
-    url = f'{BASE_URL}/cal/v101/transaction-elements'
-
-    res = requests.get(url, params={
-        'filingNid': filing['filingNid'],
-        'parts': 'All',
-        **PARAMS
-    }, auth=AUTH)
-    body = res.json()
-
-    return body['results']
-
-def list_elections():
-    """ Get all the elections
-    """
-    url = f'{BASE_URL}/election/v101/elections'
-
-    res = requests.get(url, params=PARAMS, auth=AUTH)
-    body = res.json()
-
-    return body['results']
-
-def get_filer(filer_nid):
-    """ Get one filer
-    """
-    url = f'{BASE_URL}/filer/v101/filers'
-
-    res = requests.get(url, params={ **PARAMS, 'filerNid': filer_nid }, auth=AUTH)
-    body = res.json()
-
-    return body['results']
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
@@ -104,17 +56,7 @@ OAKLAND_MISSPELLINGS = [
     'oakland'
 ]
 AUTH=get_auth_from_env_file()
-###
-import datetime as dt
-from date_range import filing_date
 
-def is_iso_str_in_range(iso_str, date_range):
-    if iso_str:
-        return dt.datetime.fromisoformat(iso_str).date().toordinal() in date_range
-    else:
-        return True
-  
-###
 class TimeoutAdapter(requests.adapters.HTTPAdapter):
     """ Will this allow me to retry on timeout? """
     def __init__(self, *args, **kwargs):
@@ -207,7 +149,7 @@ def get_trans() -> list[dict]:
 
     print('')
     return results
-  
+
 def get_trans_for_filing(filing_nid, offset=0) -> tuple[list[dict], dict]:
     """ Get a page of transactions
         for a filingNid

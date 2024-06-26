@@ -62,6 +62,13 @@ class form460:
     def copy(self):
         return copy.deepcopy(form460(self.rpt_date, self.date_range, self.filing_id))
     
+def is_iso_str_in_range(iso_str, date_range):
+    if iso_str:
+        return dt.datetime.fromisoformat(iso_str).date().toordinal() in date_range
+    else:
+        return True
+
+    
 def date_range_fix(filter_df, filing_date = {}):
     formlist = sorted([item[11] for item in filter_df.itertuples()], key=lambda x: x.rpt_date)
     # subsets lose all date range

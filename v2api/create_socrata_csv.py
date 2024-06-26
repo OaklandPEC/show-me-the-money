@@ -28,7 +28,7 @@ import requests
 from .query_v2_api import get_filer, get_auth_from_env_file
 #
 import datetime as dt
-from date_range import filing_date
+from date_range import filing_date, is_iso_str_in_range
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

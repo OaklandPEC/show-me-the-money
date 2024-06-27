@@ -151,7 +151,7 @@ def get_trans() -> list[dict]:
         print('\u258a', end='', flush=True)
 
     print('')
-    return [tran for tran in results if is_iso_str_in_range(tran['tran_Date'], filing_date.get(f"{tran['filingId']}", set())) or tran['rec_Type']=='S497']
+    return [tran for tran in results if is_iso_str_in_range(tran['transaction']['tranDate'], filing_date.get(f"{tran['filingNid']}", set())) or tran['transaction']['recType']=='S497']
 
 def get_trans_for_filing(filing_nid, offset=0) -> tuple[list[dict], dict]:
     """ Get a page of transactions

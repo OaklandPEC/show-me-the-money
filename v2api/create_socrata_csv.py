@@ -26,6 +26,9 @@ from random import uniform
 import pandas as pd
 import requests
 from .query_v2_api import get_filer, get_auth_from_env_file
+# dedupe script
+import datetime as dt
+from date_range import filing_date, is_iso_str_in_range
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -148,7 +151,7 @@ def get_trans() -> list[dict]:
         print('\u258a', end='', flush=True)
 
     print('')
-    return results
+    return [tran for tran in results if is_iso_str_in_range(tran['transaction']['tranDate'], filing_date.get(f"{tran['filingNid']}", set())) or tran['transaction']['recType']=='S497']
 
 def get_trans_for_filing(filing_nid, offset=0) -> tuple[list[dict], dict]:
     """ Get a page of transactions

@@ -20,39 +20,7 @@ class PageTracker:
         self._cur_page = start_page
         self._last_page = last_page or start_page
 
-    def __lt__(self, value):
-        return self._cur_page < value
-
-    def __gt__(self, value):
-        return self._cur_page > value
-
-    def __eq__(self, value):
-        return self._cur_page == value
-
-    def __le__(self, value):
-        return self._cur_page <= value
-
-    def __ge__(self, value):
-        return self._cur_page >= value
-
-    @property
-    def cur_page(self):
-        return self._cur_page
-
-    @property
-    def done(self):
-        """ Is cur_page the last_page? """
-        return self._cur_page == self._last_page
-
-    def incr(self):
-        """ Add 1 to current page"""
-        self._cur_page += 1
-
-    def print(self):
-        """ Print current page without newline """
-        end = ' ' if not self.done else '\n'
-        print(self._cur_page, end=end, flush=True)
-
+    
 class BaseRecord:
     """ base class for fetching of Netfile data """
     def __init__(self):
@@ -251,29 +219,7 @@ def get_filings(get_all=False, filter_amended=False):
     df.set_index('id', inplace=True)
     return df
 
-def get_filing_transaction(filing_id, get_all=False):
-    """ Get transactions from filing id
-    """
-    transaction = FilingTransaction(filing_id)
-    pages = 0 if get_all is True else 1
 
-    results = transaction.fetch(pages=pages)
-
-    return results
-
-def get_filing_transactions(filings: list[dict], get_all=False):
-    """ Get all transactions for all filings """
-    f = Filing()
-    pages = 0 if get_all is True else 1
-    filings = f.fetch(pages=pages)
-
-    transactions = []
-    for filing in filings:
-        t = FilingTransaction(filing['id'])
-        
-        transactions += t.fetch(pages=pages)
-
-    return transactions
 
 def main():
     """ Collect all filings

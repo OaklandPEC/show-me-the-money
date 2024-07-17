@@ -153,57 +153,6 @@ def get_trans() -> list[dict]:
     print('')
     return [tran for tran in results if is_iso_str_in_range(tran['transaction']['tranDate'], filing_date.get(f"{tran['filingNid']}", set())) or tran['transaction']['recType']=='S497']
 
-def get_trans_for_filing(filing_nid, offset=0) -> tuple[list[dict], dict]:
-    """ Get a page of transactions
-        for a filingNid
-    """
-    params = {
-        **PARAMS,
-        'filingNid': filing_nid,
-        'parts': 'All'
-    }
-
-    if offset > 0:
-        params['offset'] = offset
-
-    res = session.get(f'{BASE_URL}/cal/v101/transaction-elements', params=params, auth=AUTH)
-    body = res.json()
-
-    return body['results'], select_response_meta(body)
-
-def get_all_trans_for_filing(filing_nid):
-    """ Get all transactions for a single filing_nid """
-    next_offset = 0
-    params = {
-        'filing_nid': filing_nid
-    }
-
-    transactions, meta = get_trans_for_filing(**params)
-    end = '/' if meta['total'] > meta['limit'] else ' '
-    if end != ' ':
-        print('')
-    print(meta['total'], end=end, flush=True)
-
-    next_offset = meta.get('next_offset')
-    while next_offset is not None:
-        results, meta = get_trans_for_filing(**params, offset=next_offset)
-        next_offset = meta.get('next_offset')
-        prog_char = '¡' if len(results) > 0 else '.'
-        transactions += results
-        print(next_offset, end='', flush=True)
-
-    return transactions
-
-def get_trans_for_filings(filing_nids: set) -> list[dict]:
-    """ Get all transactions for set of filing netfile IDs """
-    transactions = []
-    for filing_nid in filing_nids:
-        if filing_nid in SKIP_LIST:
-            continue
-        transactions += get_all_trans_for_filing(filing_nid)
-    print('')
-
-    return transactions
 
 def get_all_filers(filer_nids: set) -> list[dict]:
     """ Fetch all filers """
@@ -310,24 +259,6 @@ def get_address(addresses: list[dict]) -> dict[str, str]:
         ])
     }
 
-def get_location(addresses):
-    """ Get (long, lat) from addresses, or return empty string """
-    if len(addresses) <= 0:
-        return ''
-
-    address = addresses[0]
-    long = address['longitude']
-    lat = address['latitude']
-
-    if long is None or lat is None:
-        return ''
-
-    # long_range = (0.2275, 0.455) # approx. b/w .25 mi and .5 mi @ 38ºN
-    # lat_range = (0.2173, 0.575) # approx. b/w .25 mi and .5 mi @ 38ºN
-    long_range = 0,0
-    lat_range = 0,0
-    adjusted = [str(float(long) + uniform(*long_range)), str(float(lat) + uniform(*lat_range))]
-    return f'POINT ({" ".join(adjusted)})'
 
 def get_contrib_category(entity_code):
     """ Translate three-letter entityCd into human readable entity code """
@@ -441,27 +372,12 @@ def df_from_candidates() -> pd.DataFrame:
 
     return filer_to_cand
 
-def get_jurisdiction(row):
-    """ Get jurisdiction of office, one of
-        - Council District
-        - OUSD District
-        - Citywide
-    """
-    if row['office'].lower().startswith('city council district '):
-        return 'Council District'
-    if row['office'].lower().startswith('ousd district'):
-        return 'Oakland Unified School District'
-    
-    return 'Citywide'
 
 def get_filing_deadlines():
     """ Get filing deadlines from csv """
     date_fields = [ 'election_date', 'report_period_start', 'report_period_end', 'filing_deadline' ]
     return pd.read_csv(f'{INPUT_DATA_DIR}/filing_deadlines.csv', parse_dates=date_fields)
 
-def merge_filings_and_trans(filings: pd.DataFrame, trans: pd.DataFrame) -> pd.DataFrame:
-    """ Return filings DataFrame joined with transactions DataFrame, dropping common columns """
-    return filings.rename(columns={'form': 'filing_form'}).merge(trans, how='left', on='filing_nid')
 
 def save_source_data(json_data: list[dict]) -> None:
     """ Save JSON data output from NetFile API """

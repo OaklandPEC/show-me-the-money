@@ -20,7 +20,39 @@ class PageTracker:
         self._cur_page = start_page
         self._last_page = last_page or start_page
 
-    
+    def __lt__(self, value):
+        return self._cur_page < value
+
+    def __gt__(self, value):
+        return self._cur_page > value
+
+    def __eq__(self, value):
+        return self._cur_page == value
+
+    def __le__(self, value):
+        return self._cur_page <= value
+
+    def __ge__(self, value):
+        return self._cur_page >= value
+
+    @property
+    def cur_page(self):
+        return self._cur_page
+
+    @property
+    def done(self):
+        """ Is cur_page the last_page? """
+        return self._cur_page == self._last_page
+
+    def incr(self):
+        """ Add 1 to current page"""
+        self._cur_page += 1
+
+    def print(self):
+        """ Print current page without newline """
+        end = ' ' if not self.done else '\n'
+        print(self._cur_page, end=end, flush=True)
+
 class BaseRecord:
     """ base class for fetching of Netfile data """
     def __init__(self):

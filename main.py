@@ -251,29 +251,7 @@ def get_filings(get_all=False, filter_amended=False):
     df.set_index('id', inplace=True)
     return df
 
-def get_filing_transaction(filing_id, get_all=False):
-    """ Get transactions from filing id
-    """
-    transaction = FilingTransaction(filing_id)
-    pages = 0 if get_all is True else 1
 
-    results = transaction.fetch(pages=pages)
-
-    return results
-
-def get_filing_transactions(filings: list[dict], get_all=False):
-    """ Get all transactions for all filings """
-    f = Filing()
-    pages = 0 if get_all is True else 1
-    filings = f.fetch(pages=pages)
-
-    transactions = []
-    for filing in filings:
-        t = FilingTransaction(filing['id'])
-        
-        transactions += t.fetch(pages=pages)
-
-    return transactions
 
 def main():
     """ Collect all filings

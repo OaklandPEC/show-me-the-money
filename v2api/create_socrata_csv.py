@@ -26,9 +26,11 @@ from random import uniform
 import pandas as pd
 import requests
 from .query_v2_api import get_filer, get_auth_from_env_file
-# dedupe script
+# <<<< dedupe script <<<<
 import datetime as dt
-from date_range import filing_date, is_iso_str_in_range
+from date_range import main, is_iso_str_in_range
+filing_date = main()
+# >>>> dedupe script >>>>
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

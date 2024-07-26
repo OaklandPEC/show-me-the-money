@@ -2,7 +2,7 @@ import pandas as pd
 import datetime as dt
 import numpy as np
 import requests
-from v2api.create_socrata_csv import AUTH, BASE_URL, PARAMS
+from v2api.query_v2_api import AUTH, BASE_URL, PARAMS
 
 def get_form(form,offset=0):
     """ Get filings with matching form type

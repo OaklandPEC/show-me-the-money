@@ -27,8 +27,8 @@ import pandas as pd
 import requests
 from .query_v2_api import get_filer, get_auth_from_env_file
 # <<<< dedupe script <<<<
-from .misfiled_ammendments_dedupe import main, is_iso_str_in_range
-filing_date = main()
+from .misfiled_ammendments_dedupe import create_corrected_period_covered, is_iso_str_in_range
+filing_date = create_corrected_period_covered()
 # >>>> dedupe script >>>>
 
 logger = logging.getLogger(__name__)

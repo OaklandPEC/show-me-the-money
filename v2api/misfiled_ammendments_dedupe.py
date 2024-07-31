@@ -48,7 +48,7 @@ def date_range_fix(df, result_dict):
     result_dict.update(dict(zip(array1, array2)))
     return result_dict
 
-def main():
+def create_corrected_period_covered():
     fppc460 = get_form('FPPC460')[0]
     fppc465 = get_form('FPPC465')[0]
     contribution_form = fppc460 + fppc465
@@ -96,4 +96,4 @@ def main():
     return filing_date
 
 if __name__ == "__main__":
-    filing_date = main()
+    filing_date = create_corrected_period_covered()

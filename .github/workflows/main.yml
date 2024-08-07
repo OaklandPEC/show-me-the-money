@@ -1,4 +1,4 @@
-name: Update Show Me the Money
+name: Update Show Me the Money 3.12
 
 on:
   schedule:
@@ -16,12 +16,11 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.9'  
+        python-version: '3.12'  
 
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
-
     - name: Update Show Me the Money
       run: |
         python -m v2api.create_socrata_csv --download

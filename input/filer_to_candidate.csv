@@ -1,29 +1,47 @@
-filer_name,is_terminated,sos_id,type,local_agency_id,election_year,candidate,contest,citywide,incumbent,start,end,is_winner,ballot_status
-Harbin-Forte for City Attorney 2024,No,1472483,Candidate or Officeholder,COAK-156375,2024,Brenda Harbin-Forte,City Attorney,Citywide,FALSE,,,,
-Ryan Richardson for Oakland City Attorney 2024,No,1462429,Candidate or Officeholder,COAK-156048,2024,Ryan Richardson,City Attorney,Citywide,FALSE,,,,
-Michael Houston for Oakland City Auditor 2024,No,1463801,Candidate or Officeholder, COAK-156081,2024,Michael Houston,City Auditor,Citywide,FALSE,,,TRUE,TRUE
-Wang for Oakland City Council 2024,No,1467592,Candidate or Officeholder,COAK-156145,2024,Charlene A. Wang,City Council At-Large,Citywide,FALSE,,,,
-Cristina Tostado for Oakland City Council 2024,No,1468486,Candidate or Officeholder,COAK-156305,2024,Cristina Tostado,City Council At-Large,Citywide,FALSE,,,,
-Kanitha Matoury for Oakland City Council At- Large 2024,No,1467524,Candidate or Officeholder,COAK-156146,2024,Kanitha Matoury,City Council At-Large,Citywide,FALSE,,,,
-LeRonne Armstrong for City Council 2024,No,1469671,Candidate or Officeholder,COAK-156324,2024,LeRonne Armstrong,City Council At-Large,Citywide,FALSE,,,,
-"Citizens for Impactful Voting in Oakland, Supporting Loren Taylor, Ignacio de la Fuente and Treva Reid for Mayor 2022",No,1453617,Not Candidate-controlled,,2022,Ignacio De La Fuente,Mayor,Citywide,,,,,
-Californians for Safer Streets Supporting Ignacio De La Fuente for Mayor of Oakland 2022,No,1452451,Not Candidate-controlled,COAK-155685,2022,Ignacio De La Fuente,Mayor,Citywide,,,,,
-Pechenuk for Oakland City Council 2024,No,1469153,Candidate or Officeholder,COAK-156307,2024,Mindy Pechenuk,City Council At-Large,Citywide,FALSE,,,,
-Rowena Brown At Large Oakland City Council 2024,No,1468846,Candidate or Officeholder,COAK-156229,2024,Rowena J. Brown,City Council At-Large,Citywide,FALSE,,,,
-Selika Thomas for City Council 2024,No,1461262,Candidate or Officeholder,COAK-156027,2024,Selika Thomas,City Council At-Large,Citywide,FALSE,,,,
-Shawn Danino for Oakland City Council 2024,No,,Candidate or Officeholder,COAK-156344,2024,Shawn B. Danino,City Council At-Large,Citywide,FALSE,,,,
-Tonya Love for Oakland City Council 2024,No,1466089,Candidate or Officeholder,COAK-156122,2024,Tonya D. Love,City Council At-Large,Citywide,FALSE,,,,
+﻿filer_name,is_terminated,sos_id,type,local_agency_id,election_year,candidate,contest,citywide,incumbent,start,end,is_winner,ballot_status
+Oaklanders Together - For A Safer Oakland,No,1467768,Ballot Measure - Support,COAK-156227,2024,Violence Reduction Services Parcel Tax,Ballot Measure,Citywide,,,,,
+Make Oakland Wildfire Safe,No,,Ballot Measure - Support,COAK-156378,2024,Wildfire Protection Zone Parcel Tax,Ballot Measure,Citywide,,,,,
+Harbin-Forte for City Attorney 2024,No,1472483,Candidate or Officeholder,COAK-156375,2024,Brenda Harbin-Forte,City Attorney,Citywide,FALSE,,,,Qualified
+Ryan Richardson for Oakland City Attorney 2024,No,1462429,Candidate or Officeholder,COAK-156048,2024,Ryan Richardson,City Attorney,Citywide,FALSE,,,,Qualified
+Michael Houston for Oakland City Auditor 2024,No,1463801,Candidate or Officeholder, COAK-156081,2024,Michael Houston,City Auditor,Citywide,FALSE,,,TRUE,Qualified
+Wang for Oakland City Council 2024,No,1467592,Candidate or Officeholder,COAK-156145,2024,Charlene A. Wang,City Council At-Large,Citywide,FALSE,,,,Qualified
+Cristina Tostado for Oakland City Council 2024,No,1468486,Candidate or Officeholder,COAK-156305,2024,Cristina Tostado,City Council At-Large,Citywide,FALSE,,,,Qualified
+Kanitha Matoury for Oakland City Council At- Large 2024,No,1467524,Candidate or Officeholder,COAK-156146,2024,Kanitha Matoury,City Council At-Large,Citywide,FALSE,,,,Qualified
+Citizens For A Brighter Future - Armstrong for Council 2024,No,1471304,Not Candidate-controlled,COAK-156343,2024,LeRonne Armstrong,City Council At-Large,,,,,,
+LeRonne Armstrong for City Council 2024,No,1469671,Candidate or Officeholder,COAK-156324,2024,LeRonne Armstrong,City Council At-Large,Citywide,FALSE,,,,Qualified
+Pechenuk for Oakland City Council 2024,No,1469153,Candidate or Officeholder,COAK-156307,2024,Mindy Pechenuk,City Council At-Large,Citywide,FALSE,,,,Qualified
+Rowena Brown At Large Oakland City Council 2024,No,1468846,Candidate or Officeholder,COAK-156229,2024,Rowena J. Brown,City Council At-Large,Citywide,FALSE,,,,Qualified
+Selika Thomas for City Council 2024,No,1461262,Candidate or Officeholder,COAK-156027,2024,Selika Thomas,City Council At-Large,Citywide,FALSE,,,,Qualified
+Shawn Danino for Oakland City Council 2024,No,1472613,Candidate or Officeholder,COAK-156344,2024,Shawn B. Danino,City Council At-Large,Citywide,FALSE,,,,Qualified
 Len Raphael for Oakland City Council 2024,No,1462967,Candidate or Officeholder,COAK-156052,2024,Leonard S. Raphael,City Council District 1,District,FALSE,,,,
-Baba Afolabi for Oakland City Council 2024,No,1467002,Candidate or Officeholder,COAK-156142,2024,Baba A. Afolabi,City Council District 3,District,FALSE,,,,
-United Teachers of Oakland supporting Resnick and Mungia for School Board 2022,No,1455586,Not Candidate-controlled,,2022,Kyra Mungia,OUSD Districts 4 and 6,School District,,,,,
-Carroll Fife for City Council 2024,No,1463441,Candidate or Officeholder,COAK-156062,2024,Carroll Fife,City Council District 3,District,TRUE,,,,
-"Meron Semedar for Oakland City Council District 3, 2024",No,1469716,Candidate or Officeholder,COAK-156316,2024,Meron Y. Semedar,City Council District 3,District,FALSE,,,,
-"Citizens for Impactful Voting in Oakland, Supporting Loren Taylor, Ignacio de la Fuente and Treva Reid for Mayor 2022",No,1453617,Not Candidate-controlled,,2022,Loren Taylor,Mayor,Citywide,,,,,
-Committee to Elect Shan Hirsch for City Council,No,1464290,Candidate or Officeholder,COAK-156045,2024,Shan M. Hirsch,City Council District 3,District,FALSE,,,,
+"akland Citizens for Public Safety, Supporting Zac Unger for City Council 2024",No,1465871,Not Candidate-controlled,COAK-156114,2024,Zac Unger,City Council District 1,,,,,,
+Zac Unger for Oakland City Council 2024,No,1462377,Candidate or Officeholder,COAK-156049,2024,Zac Unger,City Council District 1,District,FALSE,,,,Qualified
+Baba Afolabi for Oakland City Council 2024,No,1467002,Candidate or Officeholder,COAK-156142,2024,Baba A. Afolabi,City Council District 3,District,FALSE,,,,Qualified
+Carroll Fife for City Council 2024,No,1463441,Candidate or Officeholder,COAK-156062,2024,Carroll Fife,City Council District 3,District,TRUE,,,,Qualified
+"Meron Semedar for Oakland City Council District 3, 2024",No,1469716,Candidate or Officeholder,COAK-156316,2024,Meron Y. Semedar,City Council District 3,District,FALSE,,,,Qualified
+Committee to Elect Shan Hirsch for City Council,No,1464290,Candidate or Officeholder,COAK-156045,2024,Shan M. Hirsch,City Council District 3,District,FALSE,,,,Qualified
 Tariq Ikharo for Oakland City Council 2024,No,,Candidate or Officeholder,COAK-156228,2024,Tariq E. Ikharo,City Council District 3,District,FALSE,,,,
+Tonya Love for Oakland City Council 2024,No,1466089,Candidate or Officeholder,COAK-156122,2024,Tonya D. Love,City Council District 3,Citywide,FALSE,,,,
+Tyron Jordan for Oakland City Council District 3 2024,No,1466824,Candidate or Officeholder,COAK-155093,2024,Tyron C. Jordan,City Council District 3,District,FALSE,,,,Not qualified
+Warren Logan for Oakland City Council District 3 2024,No,1463590,Candidate or Officeholder,COAK-156037,2024,Warren M. Logan,City Council District 3,District,FALSE,,,,Qualified
+Dominic Prado for Oakland City Council 2024,No,1470319,Candidate or Officeholder,COAK-156303,2024,Dominic L. Prado,City Council District 5,District,FALSE,,,,Qualified
+Erin Armstrong for Oakland City Council District 5 2024,No,1470433,Candidate or Officeholder,COAK-156321,2024,Erin Armstrong,City Council District 5,District,FALSE,,,,Qualified
+Re-Elect Noel Gallo for Oakland City Council 2024,No,1472382,Candidate or Officeholder,,2024,Noel Gallo,City Council District 5,District,FALSE,,,,Qualified
+Goolsby City Council District 7 2024,No,1467984,Candidate or Officeholder,COAK-156040,2024,Merika Goolsby,City Council District 7,District,FALSE,,,,Qualified
+Re-Elect Treva Reid for Oakland City Council 2024,No,1439424,Candidate or Officeholder,COAK-155442,2024,Treva Reid,City Council District 7,District,TRUE,,,,Withdrawn
+Benjamin Salop for Oakland School Board District 1,No,1471118,Candidate or Officeholder,COAK-156342,2024,Benjamin Salop,OUSD District 1,School District,FALSE,,,,Qualified
+Davis for Oakland School Board 2024,No,1464418,Candidate or Officeholder,COAK-156099,2024,Benjamin Sam Davis,OUSD District 1,School District,TRUE,,,,
+Rachel Latta for Oakland School Board 2024,No,1469514,Candidate or Officeholder,COAK-156320,2024,Rachel E. Latta,OUSD District 1,School District,FALSE,,,,Qualified
+Aikens for Oakland School Board 2024,No,1469894,Candidate or Officeholder,COAK-156327,2024,"Dwayne Aikens, Jr.",OUSD District 3,School District,FALSE,,,,Qualified
+Patrice Berry for Oakland School Board 2024,No,1469795,Candidate or Officeholder,COAK-156322,2024,Patrice Berry,OUSD District 5,School District,FALSE,,,,
+Clifford Thompson for Oakland School Board 2024,No,1470076,Candidate or Officeholder,COAK-156333,2024,Clifford W. Thompson,OUSD District 7,School District,FALSE,,,,Qualified
+Oakland United To Recall Sheng Thao,No,1466653,Recall - Support,COAK-156125,2024,Mayoral Recall,Recall,Citywide,,10/8/2022,,TRUE,
+"Oaklanders Defending Democracy, Oppose the Recall of Mayor Thao (Thao Ballot Measure Committee)",No,1469604,Recall - Oppose,COAK-156323,2024,Mayoral Recall,Recall,,,,,,
+Jorge Lerma for Oakland School Board 2023,No,1463520,Candidate or Officeholder,COAK-156044,2023,Jorge Lerma,OUSD District 5,School District,FALSE,,,TRUE,Qualified
+Sasha Ritzie-Hernandez for Oakland School Board 2023,No,1460829,Candidate or Officeholder,COAK-155998,2023,Sasha Ritzie-Hernandez,OUSD District 5,School District,FALSE,,,FALSE,Qualified
 Neighbors for the Oakland Library - Yes on C!,No,1445857,Ballot Measure Supporting,COAK-155549,2022,Measure C,Ballot Measure,Citywide,,3/24/2022,,TRUE,Qualified
 Friends of Oakland Public Schools - Yes on Measure H,No,960997,Ballot Measure Supporting,COAK-153045,2022,Measure H,Ballot Measure,Citywide,,7/1/2022,,,Qualified
-Yes on V and Q - East Bay Tenants Union PAC,No,1453161,Ballot Measure Supporting,,2022,Measure Q,Ballot Measure,,,,,,
+Yes on V and Q - East Bay Tenants Union PAC,No,1453161,Ballot Measure Supporting,,2022,Measure Q,Ballot Measure,,,,,,Qualified
 "Oaklanders Together, a coalition of small and large businesses, business-serving organizations, and the Oakland Metropolitan Chamber of Commerce",No,1445852,Ballot Measure Supporting,COAK-155554,2022,Measure T,Ballot Measure,Citywide,,1/1/2022,,,Qualified
 "Yes on T - Invest In Our Oakland 2022, Sponsored by SEIU Local 1021 and IFPTE Local 21",No,1444350,Ballot Measure Supporting,COAK-155536,2022,Measure T,Ballot Measure,Citywide,,1/1/2022,,,Qualified
 Oakland Rising Ballot Committee Supporting T and W sponsored by Center for Empowered Politics,No,1332115,Ballot Measure Supporting,COAK-155709,2022,Measure T,Ballot Measure,Citywide,,9/7/2022,,,Qualified
@@ -32,24 +50,6 @@ Yes on V and Q - East Bay Tenants Union PAC,No,1453161,Ballot Measure Supporting
 "Yes on W, Oakland Fair Elections, Sponsored by Civic Advocacy Organizations",No,1448942,Ballot Measure Supporting,COAK-155654,2022,Measure W,Ballot Measure,Citywide,,1/1/2022,,,Qualified
 Oakland Rising Ballot Committee Supporting T and W sponsored by Center for Empowered Politics,No,1332115,Ballot Measure Supporting,COAK-155709,2022,Measure W,Ballot Measure,Citywide,,9/7/2022,,,Qualified
 "Oaklanders for the Oakland Zoo, Major Funding by the Conservation Society of California",No,1444480,Ballot Measure Supporting,COAK-155542,2022,Measure Y,Ballot Measure,Citywide,,1/1/2022,,,Qualified
-Tyron Jordan for Oakland City Council District 3 2024,No,1466824,Candidate or Officeholder,COAK-155093,2024,Tyron C. Jordan,City Council District 3,District,FALSE,,,,
-United Teachers of Oakland supporting Resnick and Mungia for School Board 2022,No,1455586,Not Candidate-controlled,,2022,Nick Resnick,OUSD Districts 4 and 6,School District,,,,,
-Warren Logan for Oakland City Council District 3 2024,No,1463590,Candidate or Officeholder,COAK-156037,2024,Warren M. Logan,City Council District 3,District,FALSE,,,,
-Dominic Prado for Oakland City Council 2024,No,1470319,Candidate or Officeholder,COAK-156303,2024,Dominic L. Prado,City Council District 5,District,FALSE,,,,
-Erin Armstrong for Oakland City Council District 5 2024,No,1470433,Candidate or Officeholder,COAK-156321,2024,Erin Armstrong,City Council District 5,District,FALSE,,,,
-Goolsby City Council District 7 2024,No,1467984,Candidate or Officeholder,COAK-156040,2024,Merika Goolsby,City Council District 7,District,FALSE,,,,
-Re-Elect Treva Reid for Oakland City Council 2024,No,1439424,Candidate or Officeholder,COAK-155442,2024,Treva Reid,City Council District 7,District,TRUE,,,,
-Working Families for a Better Oakland supporting Sheng Thao for Oakland Mayor 2022,No,1452920,Not Candidate-controlled,COAK-155703,2022,Sheng Thao,Mayor,Citywide,,,,,
-Benjamin Salop for Oakland School Board District 1,No,1471118,Candidate or Officeholder,COAK-156342,2024,Benjamin Salop,OUSD District 1,School District,FALSE,,,,
-"Citizens for Impactful Voting in Oakland, Supporting Loren Taylor, Ignacio de la Fuente and Treva Reid for Mayor 2022",No,1453617,Not Candidate-controlled,,2022,Treva Reid,Mayor,Citywide,,,,,
-Davis for Oakland School Board 2024,No,1464418,Candidate or Officeholder,COAK-156099,2024,Benjamin Sam Davis,OUSD District 1,School District,TRUE,,,,
-Rachel Latta for Oakland School Board 2024,No,1469514,Candidate or Officeholder,COAK-156320,2024,Rachel E. Latta,OUSD District 1,School District,FALSE,,,,
-Aikens for Oakland School Board 2024,No,1469894,Candidate or Officeholder,COAK-156327,2024,"Dwayne Aikens, Jr.",OUSD District 3,School District,FALSE,,,,
-Patrice Berry for Oakland School Board 2024,No,1469795,Candidate or Officeholder,COAK-156322,2024,Patrice Berry,OUSD District 5,School District,FALSE,,,,
-Clifford Thompson for Oakland School Board 2024,No,1470076,Candidate or Officeholder,COAK-156333,2024,Clifford W. Thompson,OUSD District 7,School District,FALSE,,,,
-Zac Unger for Oakland City Council 2024,No,1462377,Candidate or Officeholder,COAK-156049,2024,Zac Unger,City Council District 1,District,FALSE,,,,
-Jorge Lerma for Oakland School Board 2023,No,1463520,Candidate or Officeholder,COAK-156044,2023,Jorge Lerma,OUSD District 5,School District,FALSE,,,TRUE,Qualified
-Sasha Ritzie-Hernandez for Oakland School Board 2023,No,1460829,Candidate or Officeholder,COAK-155998,2023,Sasha Ritzie-Hernandez,OUSD District 5,School District,FALSE,,,FALSE,Qualified
 Harold Lowe for City Council 2022,No,1453436,Candidate or Officeholder,,2022,Harold Lowe,City Council District 2,District,FALSE,,,,
 Re-Elect Nikki F Bas for City Council 2022,No,1423821,Candidate or Officeholder,COAK-154920,2022,Nikki Fortunato Bas,City Council District 2,District,TRUE,1/2/2020,,TRUE,
 Janani Ramachandran for Oakland City Council District 4 2022,No,1442792,Candidate or Officeholder,COAK-155501,2022,Janani Ramachandran,City Council District 4,District,FALSE,10/28/2021,,TRUE,
@@ -62,11 +62,16 @@ Committee to Elect Allyssa Victory for Oakland Mayor 2022,No,1439739,Candidate o
 Johnson Oakland Mayor 2022,No,1441869,Candidate or Officeholder,COAK-155491,2022,Derreck Johnson,Mayor,Citywide,FALSE,11/23/2021,,,
 Elbert Owens for Mayor 2022,No,1448962,Candidate or Officeholder,COAK-155541,2022,Elbert Owens,Mayor,Citywide,FALSE,,,,
 Hodge for Oakland Mayor 2022,No,1442227,Candidate or Officeholder,COAK-155458,2022,Gregory Hodge,Mayor,Citywide,FALSE,9/24/2021,,,
+"Citizens for Impactful Voting in Oakland, Supporting Loren Taylor, Ignacio de la Fuente and Treva Reid for Mayor 2022",No,1453617,Not Candidate-controlled,,2022,Ignacio De La Fuente,Mayor,Citywide,,,,,
+Californians for Safer Streets Supporting Ignacio De La Fuente for Mayor of Oakland 2022,No,1452451,Not Candidate-controlled,COAK-155685,2022,Ignacio De La Fuente,Mayor,Citywide,,,,,
 De La Fuente for Mayor 2022,No,1446236,Candidate or Officeholder,COAK-155556,2022,Ignacio De La Fuente,Mayor,Citywide,FALSE,,,,
 Committee to Elect John Mimosa Marks for Oakland Mayor 2022,No,1446906,Candidate or Officeholder,COAK-155537,2022,John Marks,Mayor,Citywide,FALSE,,,,
+"Citizens for Impactful Voting in Oakland, Supporting Loren Taylor, Ignacio de la Fuente and Treva Reid for Mayor 2022",No,1453617,Not Candidate-controlled,,2022,Loren Taylor,Mayor,Citywide,,,,,
 Loren Taylor for Oakland Mayor 2022,No,1441375,Candidate or Officeholder,COAK-155485,2022,Loren Taylor,Mayor,Citywide,FALSE,9/29/2021,,,
 Seneca Scott for Oakland Mayor 2022,No,1444317,Candidate or Officeholder,COAK-155516,2022,Seneca Scott,Mayor,Citywide,FALSE,1/18/2022,,,
+Working Families for a Better Oakland supporting Sheng Thao for Oakland Mayor 2022,No,1452920,Not Candidate-controlled,COAK-155703,2022,Sheng Thao,Mayor,Citywide,,,,,
 Sheng Thao for Oakland Mayor 2022,No,1442594,Candidate or Officeholder,COAK-155502,2022,Sheng Thao,Mayor,Citywide,FALSE,4/4/2019,,TRUE,
+"Citizens for Impactful Voting in Oakland, Supporting Loren Taylor, Ignacio de la Fuente and Treva Reid for Mayor 2022",No,1453617,Not Candidate-controlled,,2022,Treva Reid,Mayor,Citywide,,,,,
 Treva Reid for Oakland Mayor 2022,No,1442079,Candidate or Officeholder,COAK-155498,2022,Treva Reid,Mayor,Citywide,FALSE,11/18/2021,,FALSE,
 Jordan for Mayor 2022,No,1439246,Candidate or Officeholder,COAK-155441,2022,Tyron Jordan,Mayor,Citywide,FALSE,6/28/2021,,,
 David Kakishiba for Oakland City Council 2022,No,1453879,Candidate or Officeholder,,2022,David Kakishiba,OUSD District 2,School District,,,,,
@@ -78,6 +83,8 @@ Committee to Support Pecolia Manigo for Oakland School Director 2022,No,1448946,
 Joel Velasquez for Oakland School Board 2022,No,1440818,Candidate or Officeholder,,2022,Joel Velasquez,OUSD District 6,,FALSE,,,,
 Kyra Mungia for Oakland Unified School Board 2022,No,1448165,Candidate or Officeholder,COAK-155642,2022,Kyra Mungia,OUSD District 6,School District,FALSE,,,,
 Coalition to Elect Valarie Bachelor for School Board 2022,No,1451532,Candidate or Officeholder,COAK-155673,2022,Valarie L. Bachelor,OUSD District 6,School District,FALSE,,,,
+United Teachers of Oakland supporting Resnick and Mungia for School Board 2022,No,1455586,Not Candidate-controlled,,2022,Kyra Mungia,OUSD Districts 4 and 6,School District,,,,,
+United Teachers of Oakland supporting Resnick and Mungia for School Board 2022,No,1455586,Not Candidate-controlled,,2022,Nick Resnick,OUSD Districts 4 and 6,School District,,,,,
 Re-Elect City Attorney Barbara Parker 2020,No,1427469,Candidate or Officeholder,COAK-155181,2020,Barbara Parker,City Attorney,Citywide,TRUE,6/26/2020,,TRUE,Qualified
 Elias Ferran for City Attorney 2020,Yes,1426949,Candidate or Officeholder,COAK-155175,2020,Eli Ferran,City Attorney,Citywide,FALSE,6/15/2020,,FALSE,Qualified
 Derreck Johnson for Oakland City Council 2020,No,1426780,Candidate or Officeholder,COAK-155160,2020,Derreck B. Johnson,City Council At-Large,Citywide,FALSE,5/26/2020,,FALSE,Qualified

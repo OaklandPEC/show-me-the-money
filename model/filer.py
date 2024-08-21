@@ -5,7 +5,6 @@ from datetime import datetime as dt
 from pprint import PrettyPrinter
 from typing import List
 import pandas as pd
-from .base import BaseModelCollection
 
 class Filer:
     """ A filer record """
@@ -46,10 +45,10 @@ class Filer:
 
         return [ '' for _ in range(4) ]
 
-class FilerCollection(BaseModelCollection):
+class FilerCollection():
     """ A bunch of filer objects """
     def __init__(self, filer_records):
-        super().__init__(filer_records)
+
         self._column_dtypes = {
             'filer_nid': 'string',
             'filer_id': 'string',
@@ -60,3 +59,26 @@ class FilerCollection(BaseModelCollection):
             'election_date': 'string'
         }
         self._collection = [ Filer(filer_record) for filer_record in filer_records ]
+    @property
+    def df(self):
+        """ Get a Pandas DataFrame of transactions """
+        filer_df = pd.DataFrame([
+            f.__dict__
+            for f in self._collection
+        ])
+        filer_df = filer_df.astype({
+            'filer_nid': 'string',
+            'filer_id': 'string',
+            'filer_name': 'string',
+            'committee_type':'string',
+            'office': 'string',
+            'candidate_name': 'string',
+            'start_date': 'string',
+            'end_date': 'string',
+            'election_date': 'string'
+        })
+        filer_df['start_date'] = pd.to_datetime(filer_df['start_date'])
+        filer_df['end_date'] = pd.to_datetime(filer_df['end_date'])
+        filer_df['election_date'] = pd.to_datetime(filer_df['election_date'])
+
+        return filer_df

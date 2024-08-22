@@ -9,13 +9,17 @@ def get_auth_from_env_file(filename: str='.env'):
     """ Split .env file on newline and look for API_KEY and API_SECRET
         Return their values as a tuple
     """
-    auth_keys = [ 'NETFILE_API_KEY', 'NETFILE_API_SECRET' ]
-    auth = tuple( v for _, v in sorted([
-        ln.split('=') for ln in
-        Path(filename).read_text(encoding='utf8').strip().split('\n')
-        if ln.startswith(auth_keys[0]) or ln.startswith(auth_keys[1])
-    ], key=lambda ln: auth_keys.index(ln[0])))
-
+    env_file=Path(filename)
+    auth_keys = [ 'API_KEY', 'API_SECRET' ]
+    if env_file.exists():
+        auth = tuple( v for _, v in sorted([
+            ln.split('=') for ln in
+            env_file.read_text(encoding='utf8').strip().split('\n')
+            if ln.startswith(auth_keys[0]) or ln.startswith(auth_keys[1])
+        ], key=lambda ln: auth_keys.index(ln[0])))
+    else:
+        auth=tuple(os.environ[key] for key in auth_keys)
+            
     return auth
 
 class TimeoutAdapter(requests.adapters.HTTPAdapter):
@@ -67,28 +71,19 @@ class NetFileClient:
         self._logger.addHandler(handler)
         self._logger.setLevel(self._log_level)
 
-    def get_auth(self, env_file):
-        key_api_key = 'NETFILE_API_KEY'
-        key_api_secret = 'NETFILE_API_SECRET'
-
-        # Attempt to get auth from env vars
-        api_key = os.environ.get(key_api_key)
-        api_secret = os.environ.get(key_api_secret)
-
-        if api_key and api_secret:
-            return api_key, api_secret
-
-        # Attempt to get auth from .env file
-        with open(env_file) as f:
-            contents = {
-                (item := line.split('='))[0]: item[1] for line in f.read().strip().split('\n')
-            }
-            api_key, api_secret = contents.get(key_api_key), contents.get(key_api_secret) 
-
-        if api_key and api_secret:
-            return api_key, api_secret
+    def get_auth(self, filename: str='.env'):
+        env_file=Path(filename)
+        auth_keys = [ 'API_KEY', 'API_SECRET' ]
+        if env_file.exists():
+            auth = tuple( v for _, v in sorted([
+                ln.split('=') for ln in
+                env_file.read_text(encoding='utf8').strip().split('\n')
+                if ln.startswith(auth_keys[0]) or ln.startswith(auth_keys[1])
+            ], key=lambda ln: auth_keys.index(ln[0])))
         else:
-            raise KeyError('Unable to load credentials')
+            auth=tuple(os.environ[key] for key in auth_keys)
+                
+        return auth 
 
     def fetch(self, endpoint, **kwargs):
         """ Fetch all of a particular record type """

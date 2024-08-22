@@ -44,7 +44,7 @@ class NetFileClient:
         self._base_url = 'https://netfile.com/api/campaign'
         self._initial_params = {
             'offset': 0,
-            'limit': 1000
+            'limit': 150000
         }
         self._base_params = { 'aid': 'COAK' }
         self._params = {
@@ -95,6 +95,7 @@ class NetFileClient:
         url = self._base_url + getattr(Routes, endpoint)
         params = { **self._params }
         if 'params' in kwargs:
+            print(True)
             params.update(kwargs['params'])
         res = self.session.get(url, auth=self._auth, params=params)
         body = res.json()

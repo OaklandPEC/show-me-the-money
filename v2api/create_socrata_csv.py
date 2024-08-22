@@ -29,6 +29,10 @@ from model.transaction import Transaction, UnitemizedTransaction, TransactionCol
 from model.filer import FilerCollection
 from netfile_client.NetFileClient import NetFileClient
 from .query_v2_api import get_filer, get_auth_from_env_file
+# <<<< dedupe script <<<<
+from .misfiled_ammendments_dedupe import create_corrected_period_covered, is_iso_str_in_range
+filing_date = create_corrected_period_covered()
+# >>>> dedupe script >>>>
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -276,6 +280,9 @@ def main(filings, filing_elements, filers):
         3. Match filingDate to electionDate, extract year from date
         4. Query /filer/v101/filers/{filer_nid}, get electionInfluences[electionDate].seat.officeName
     """
+    print('With duplicates:', len(filing_elements))
+    filing_elements = [t for t in filing_elements if is_iso_str_in_range(t.get('elementModel',{}).get('tranDate'), filing_date.get(f"{t['filingNid']}", set())) or t.get('elementModel',{}).get('recType')=='S497']
+    print('Without duplicates:', len(filing_elements))
     filing_df = df_from_filings(filings)
     filing_df['filing_date'] = pd.to_datetime(filing_df['filing_date'])
     print('Unique values for "form" in filings', filing_df['form'].unique())
